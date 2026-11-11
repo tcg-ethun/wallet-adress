@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Esan's Withdraw</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#e8edf2;--ink:#14213d;--muted:#5b6678;--card:#fff;--line:#c9d2dc;--acc:#2f4bff;--accink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--ink:#e8edf6;--muted:#93a0b5;--card:#182236;--line:#2a3a56;--acc:#7b8cff;--accink:#0f1624}}
+:root[data-theme="dark"]{--bg:#0f1624;--ink:#e8edf6;--muted:#93a0b5;--card:#182236;--line:#2a3a56;--acc:#7b8cff;--accink:#0f1624}
+*{box-sizing:border-box}
+html,body{margin:0}
+html,body,*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html,body{touch-action:pan-x pan-y}
+body{background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:48px 20px 64px}
+h1{font-size:clamp(2.2rem,8vw,3.6rem);line-height:1.05;margin:0 0 12px;font-weight:700;letter-spacing:-.02em}
+.bio{color:var(--muted);max-width:46ch;margin:0 0 40px;font-size:1.1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab{font:inherit;font-weight:500;border:1px solid var(--line);background:transparent;color:var(--ink);padding:8px 16px 8px 10px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tab svg{width:22px;height:22px;flex:none}
+.tab[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--accink)}
+.tab:focus-visible,.copy:focus-visible,.addr:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.addr{display:block;width:100%;text-align:left;background:none;border:0;padding:0;color:var(--ink);cursor:pointer;
+font-family:"JetBrains Mono",ui-monospace,monospace;font-weight:500;font-size:clamp(1.05rem,4.6vw,1.7rem);line-height:1.45;word-break:break-all}
+.row{display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:24px}
+.copy{font:inherit;font-weight:700;background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:12px 22px;cursor:pointer}
+.copy.done{background:#1a9b57;color:#fff}
+#qr{background:#fff;padding:8px;border-radius:10px;line-height:0}
+.hint{color:var(--muted);font-size:.9rem;margin:20px 0 0}
+.admin{margin-top:28px}
+.admin h2{font-size:1.15rem;margin:0 0 4px}
+.admin p{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+.links{display:grid;gap:10px}
+.link{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);text-decoration:none;font-weight:700}
+.link:hover{border-color:var(--acc)}
+.link:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.link svg{width:30px;height:30px;flex:none}
+.link small{display:block;color:var(--muted);font-weight:500;font-size:.88rem}
+.toast{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+.toast-box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px 40px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.25);transform:scale(.85);transition:transform .25s cubic-bezier(.2,1.4,.4,1)}
+.toast.show .toast-box{transform:scale(1)}
+.toast svg{width:72px;height:72px;display:block;margin:0 auto 10px}
+.toast circle{fill:none;stroke:#1a9b57;stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151}
+.toast path{fill:none;stroke:#1a9b57;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40}
+.toast.show circle{animation:draw .45s ease forwards}
+.toast.show path{animation:draw .3s .35s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.toast p{margin:0;font-weight:700}
+@media (prefers-reduced-motion:reduce){.toast,.toast-box{transition:none}.toast.show circle,.toast.show path{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Poppo & Vone Withdraw adress</h1>
+  <p class="bio">Copy the adress and contact with admin again :)</p>
+  <section class="card" aria-label="Wallet addresses">
+    <div class="tabs" id="tabs"></div>
+    <button class="addr" id="addr" type="button" aria-label="Copy wallet address"></button>
+    <div class="row">
+      <button class="copy" id="copy" type="button">Copy address</button>
+      <div id="qr" aria-label="QR code of the address"></div>
+    </div>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <section class="admin" aria-label="Contact admin">
+    <h2>Contact admin</h2>
+    <p>Tap to open a WhatsApp chat or the Facebook profile.</p>
+    <div class="links">
+      <a class="link" href="https://wa.me/8801622544070" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        <span>WhatsApp<small>01622544070</small></span>
+      </a>
+      <a class="link" href="https://wa.me/8801577604590" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        <span>WhatsApp<small>01577604590</small></span>
+      </a>
+      <a class="link" href="https://www.facebook.com/share/1RjnE62Q8A/" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0866FF" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
+        <span>Facebook<small>Open profile</small></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <div class="toast-box">
+    <svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l8 8 15-17"/></svg>
+    <p>Address copied</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// Replace with your real addresses. Add or remove entries freely.
+var ICON_TRON = '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none"><circle fill="#EF0027" cx="16" cy="16" r="16"/><path d="M21.932 9.913L7.5 7.257l7.595 19.112 10.583-12.894-3.746-3.562zm-.232 1.17l2.208 2.099-6.038 1.093 3.83-3.192zm-5.142 2.973l-6.364-5.278 10.402 1.914-4.038 3.364zm-.453.934l-1.038 8.58L9.472 9.487l6.633 5.502zm.96.455l6.687-1.21-7.67 9.343.983-8.133z" fill="#FFF"/></g></svg>';
+var ICON_BNB = '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none"><circle cx="16" cy="16" r="16" fill="#F3BA2F"/><path fill="#FFF" d="M12.116 14.404L16 10.52l3.886 3.886 2.26-2.26L16 6l-6.144 6.144 2.26 2.26zM6 16l2.26-2.26L10.52 16l-2.26 2.26L6 16zm6.116 1.596L16 21.48l3.886-3.886 2.26 2.259L16 26l-6.144-6.144-.003-.003 2.263-2.257zM21.48 16l2.26-2.26L26 16l-2.26 2.26L21.48 16zm-3.188-.002h.002V16L16 18.294l-2.291-2.29-.004-.004.004-.003.401-.402.195-.195L16 13.706l2.293 2.293z"/></g></svg>';
+var WALLETS = [
+  {name:"USDT (TRC20)", icon:ICON_TRON, note:"Send USDT on the TRON (TRC20) network only.", address:"TL79RUGhAnYPPmBGc8eHUU1qzAaGmDE9on"},
+  {name:"Binance (BEP20)", icon:ICON_BNB, note:"Send on the BNB Smart Chain (BEP20) network only.", address:"0x94997e0c88c6021ef03ea5299862da73aafba1d3"}
+];
+var cur = 0, qr = null;
+var tabs = document.getElementById("tabs"), addr = document.getElementById("addr"),
+    copyBtn = document.getElementById("copy"), hint = document.getElementById("hint"),
+    qrBox = document.getElementById("qr");
+
+function render(){
+  var w = WALLETS[cur];
+  addr.textContent = w.address;
+  hint.textContent = w.note;
+  Array.prototype.forEach.call(tabs.children, function(b,i){ b.setAttribute("aria-pressed", i===cur ? "true" : "false"); });
+  qrBox.innerHTML = "";
+  try { qr = new QRCode(qrBox, {text:w.address, width:112, height:112}); } catch(e){ qrBox.style.display="none"; }
+}
+WALLETS.forEach(function(w,i){
+  var b = document.createElement("button");
+  b.className = "tab"; b.type = "button"; b.innerHTML = w.icon + "<span></span>"; b.lastChild.textContent = w.name;
+  b.onclick = function(){ cur = i; render(); };
+  tabs.appendChild(b);
+});
+var toast = document.getElementById("toast"), toastTimer = null;
+function showToast(){
+  toast.classList.remove("show"); void toast.offsetWidth; toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 1500);
+}
+function doCopy(){
+  var t = WALLETS[cur].address;
+  function ok(){ showToast(); copyBtn.textContent = "Copied"; copyBtn.classList.add("done");
+    setTimeout(function(){ copyBtn.textContent = "Copy address"; copyBtn.classList.remove("done"); }, 1800); }
+  function fallback(){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;-webkit-user-select:text;user-select:text";
+    document.body.appendChild(ta); ta.select();
+    try { if (document.execCommand("copy")) ok(); } catch(e){}
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fallback);
+  else fallback();
+}
+copyBtn.onclick = doCopy; addr.onclick = doCopy;
+
+// block zoom (pinch, ctrl+wheel, ctrl +/-/0)
+["gesturestart","gesturechange","gestureend"].forEach(function(e){ document.addEventListener(e, function(ev){ ev.preventDefault(); }); });
+document.addEventListener("touchmove", function(e){ if (e.touches.length > 1) e.preventDefault(); }, {passive:false});
+document.addEventListener("wheel", function(e){ if (e.ctrlKey) e.preventDefault(); }, {passive:false});
+document.addEventListener("keydown", function(e){ if ((e.ctrlKey || e.metaKey) && ["+","-","=","0"].indexOf(e.key) > -1) e.preventDefault(); });
+
+render();
+</script>
+</body>
+</html>
